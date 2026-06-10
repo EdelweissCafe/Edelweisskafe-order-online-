@@ -19,21 +19,21 @@
       "category": "kafe",
       "name": {"el":"Ελληνικός"},
       "price": 2.5,
-      "image": "/foto/A1.jpg",
+      "image": "foto/A1.jpg",
       "description": {"el":"Ο παραδοσιακός Ελληνικός καφές"}
     },
     {
       "category": "kafe",
       "name": {"el":"Ελληνικός Διπλός"},
       "price": 3.5,
-      "image": "/foto/A2.jpg",
+      "image": "foto/A2.jpg",
       "description": {"el":"Διπλή απόλαυση"}
     },
     {
       "category": "kafe",
       "name": {"el":"Νες Καφέ / Φραπέ"},
       "price": 3.5,
-      "image": "/foto/A3.jpg",
+      "image": "foto/A3.jpg",
       "description": {"el":"Ο αυθεντικός Νες Καφέ. Ζεστός ή Κρύος"}
     },
     {
