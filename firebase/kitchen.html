@@ -1,51 +1,44 @@
+
 <!DOCTYPE html>
-<html lang="el">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Οθόνη Κουζίνας - Edelweiss Café</title>
-  <style>
-    body{font-family:Arial,sans-serif;background:#1a1a2e;color:white;padding:20px;}
-    h1{text-align:center;color:#d4af37;margin-bottom:20px;}
-    .order-card{background:#16213e;border-radius:15px;padding:15px;margin-bottom:15px;border-left:6px solid #d4af37;}
-    .order-header{display:flex;justify-content:space-between;margin-bottom:10px;}
-    .order-items li{margin:5px 0;}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kitchen</title>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import { getDatabase, ref, onChildAdded } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics.js";
+
+
+const firebaseConfig = {
+  apiKey: "AlzaSyBzp2V3rskL_B2vVqIa2ding3AoUPLVUyA",
+  authDomain: "edelweisscafeplus.firebaseapp.com",
+  projectId: "edelweisscafeplus",
+  storageBucket: "edelweisscafeplus.appspot.com",
+  messagingSenderId: "643023210296",
+  appId: "1:643023210296:web:45d0e77431f946249023cd",
+  measurementId: "G-X2BTBZ3N5G"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const database = getDatabase(app);
+
+
+// Listen for orders
+const ordersRef = ref(database, 'orders');
+onChildAdded(ordersRef, (snapshot) => {
+  const order = snapshot.val();
+  const div = document.createElement('div');
+  div.textContent = "Order: " + order.item + ", Qty: " + order.qty;
+  document.body.appendChild(div);
+});
+</script>
 </head>
 <body>
-  <h1>🍽️ Οθόνη Κουζίνας</h1>
-  <div id="ordersContainer">⏳ Περιμένοντας παραγγελίες...</div>
-
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <script>
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "edelweisscafeplus.firebaseapp.com",
-      databaseURL: "https://edelweisscafeplus-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "edelweisscafeplus",
-      storageBucket: "edelweisscafeplus.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const ordersContainer = document.getElementById('ordersContainer');
-
-    db.ref('orders').on('value', snapshot=>{
-      const orders = snapshot.val();
-      if(!orders){ ordersContainer.innerHTML='✅ ΟΛΕΣ ΟΙ ΠΑΡΑΓΓΕΛΙΕΣ ΕΧΟΥΝ ΟΛΟΚΛΗΡΩΘΕΙ!'; return; }
-      ordersContainer.innerHTML='';
-      Object.entries(orders).forEach(([key, order])=>{
-        let itemsHtml='';
-        order.items.forEach(i=>{ itemsHtml+=`<li>${i.qty}x ${i.name} - ${(i.price*i.qty).toFixed(2)}€</li>`; });
-        ordersContainer.innerHTML += `<div class="order-card">
-          <div class="order-header"><span>Τραπέζι ${order.table}</span><span>${order.time}</span></div>
-          <ul class="order-items">${itemsHtml}</ul>
-        </div>`;
-      });
-    });
-  </script>
+<h1>Kitchen Page</h1>
+<div id="orders"></div>
 </body>
 </html>
