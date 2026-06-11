@@ -256,7 +256,6 @@
         container.appendChild(div);
       });
 
-      // Προσθήκη event listeners σε ΟΛΑ τα κουμπιά Προσθήκης
       document.querySelectorAll('.add-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -318,23 +317,58 @@
       });
     }
 
-    document.getElementById('submitOrder').addEventListener('click', () => {
+    // Βοηθητική συνάρτηση για υπολογισμό συνόλου
+    function calculateTotal() {
+      return cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+    }
+
+    document.getElementById('submitOrder').addEventListener('click', async () => {
       const table = document.getElementById('tableSelect').value;
       if (cart.length === 0) {
         alert('Το καλάθι είναι άδειο!');
         return;
       }
       
-      let message = `🆕 Νέα Παραγγελία\n📌 Τραπέζι: ${table}\n`;
+      // Δημιουργία αναλυτικού μηνύματος
+      let itemsText = '';
       cart.forEach(item => {
-        message += `\n${item.quantity}x ${item.product.name.el} - ${(item.product.price * item.quantity).toFixed(2)}€`;
+        itemsText += `${item.quantity}x ${item.product.name.el} - ${(item.product.price * item.quantity).toFixed(2)}€\n`;
       });
-      message += `\n\n💰 Σύνολο: ${cart.reduce((sum, i) => sum + (i.product.price * i.quantity), 0).toFixed(2)}€`;
       
-      alert(message);
+      const total = calculateTotal();
+      const message = `🔔 ΝΕΑ ΠΑΡΑΓΓΕΛΙΑ 🔔\n\n📌 Τραπέζι: ${table}\n\n📋 Παραγγελία:\n${itemsText}\n💰 Σύνολο: ${total.toFixed(2)}€\n\n⏰ ${new Date().toLocaleString()}`;
       
+      // ΠΑΡΑΚΑΛΩ ΒΑΛΕ ΤΑ ΣΤΟΙΧΕΙΑ ΣΟΥ ΕΔΩ:
+      const BOT_TOKEN = 8925604839:AAG5KL_oiuH3X9Eq91FPq5u2EKf7onWyXP8;
+      const CHAT_ID = 8777877765926;
+      
+      // Αποστολή στο Telegram (αν υπάρχουν τα στοιχεία)
+      if (BOT_TOKEN !== 8925604839:AAG5KL_oiuH3X9Eq91FPq5u2EKf7onWyXP8 && CHAT_ID !== 877765926 ) {
+        try {
+          await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: CHAT_ID,
+              text: message,
+              parse_mode: 'Markdown'
+            })
+          });
+          alert('✅ Η παραγγελία στάλθηκε στο κατάστημα!');
+        } catch(error) {
+          alert('⚠️ Η παραγγελία καταχωρήθηκε αλλά το σύστημα ειδοποίησης απέτυχε.\n' + message);
+        }
+      } else {
+        // Αν δεν έχουν μπει τα στοιχεία, δείχνουμε το μήνυμα στο alert
+        alert('📢 ΠΑΡΑΓΓΕΛΙΑ (δοκιμαστική λειτουργία)\n\n' + message + '\n\n⚠️ Για να στέλνεται στο Telegram, βάλε το BOT_TOKEN και CHAT_ID στο κώδικα.');
+      }
+      
+      // Καθαρισμός καλαθιού
       cart = [];
       renderCart();
+      document.querySelectorAll('.add-btn').forEach(btn => {
+        // Δεν κάνουμε reset τα quantity inputs γιατί δεν υπάρχουν στο νέο design
+      });
     });
 
     loadData();
