@@ -3,184 +3,192 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Edelweiss Café - Οθόνη Κουζίνας</title>
+  <title>Edelweiss Café - Online Παραγγελίες</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { 
-      font-family: 'Courier New', monospace; 
-      background: #1a1a2e; 
-      padding: 20px;
-      min-height: 100vh;
-    }
-    h1 { 
-      text-align: center; 
-      color: #d4af37; 
-      margin-bottom: 30px;
-      font-size: 2.5em;
-    }
-    .orders-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
-    }
-    .order-card {
-      background: #16213e;
-      border-radius: 20px;
-      padding: 20px;
-      min-width: 300px;
-      flex: 1;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      border-left: 8px solid #d4af37;
-      animation: slideIn 0.5s ease;
-    }
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateX(50px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
-    .order-header {
-      display: flex;
-      justify-content: space-between;
-      border-bottom: 2px solid #d4af37;
-      padding-bottom: 10px;
-      margin-bottom: 15px;
-    }
-    .table-num {
-      font-size: 1.8em;
-      font-weight: bold;
-      color: #d4af37;
-    }
-    .time {
-      color: #888;
-      font-size: 0.9em;
-    }
-    .order-items {
-      list-style: none;
-      margin: 15px 0;
-    }
-    .order-items li {
-      padding: 8px 0;
-      border-bottom: 1px solid #2a2a4a;
-      font-size: 1.1em;
-    }
-    .order-total {
-      font-size: 1.3em;
-      font-weight: bold;
-      text-align: right;
-      margin-top: 15px;
-      color: #d4af37;
-    }
-    .complete-btn {
-      background: #d4af37;
-      color: #16213e;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 10px;
-      font-size: 1em;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 15px;
-      width: 100%;
-      transition: transform 0.2s;
-    }
-    .complete-btn:hover {
-      transform: scale(1.02);
-    }
-    .no-orders {
-      text-align: center;
-      padding: 60px;
-      color: #888;
-      font-size: 1.5em;
-    }
+    body { font-family: Arial, sans-serif; background: #f5f0e8; padding-bottom: 80px; }
+    header { background: #1e3a1e; color: white; text-align: center; padding: 20px; position: sticky; top: 0; z-index: 10; }
+    header h1 { font-size: 1.5em; margin-bottom: 10px; }
+    .table-selector { background: #2d5a2d; padding: 10px; display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .table-selector label { font-weight: bold; }
+    .table-selector select { padding: 8px 15px; font-size: 16px; border-radius: 8px; border: none; }
+    .categories { display: flex; overflow-x: auto; padding: 15px; gap: 10px; background: white; border-bottom: 1px solid #ddd; }
+    .cat-btn { padding: 8px 20px; border: 1px solid #1e3a1e; background: white; border-radius: 25px; cursor: pointer; white-space: nowrap; font-size: 14px; }
+    .cat-btn.active { background: #1e3a1e; color: white; }
+    .products { padding: 15px; max-width: 800px; margin: 0 auto; margin-bottom: 200px; }
+    .product { background: white; border-radius: 15px; margin-bottom: 15px; padding: 12px; display: flex; gap: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .product img { width: 100px; height: 100px; object-fit: cover; border-radius: 12px; }
+    .product-info { flex: 1; }
+    .product-name { font-size: 1.2em; font-weight: bold; color: #1e3a1e; }
+    .product-desc { font-size: 0.85em; color: #666; margin: 5px 0; }
+    .product-price { font-size: 1.3em; font-weight: bold; color: #d4af37; }
+    .add-btn { background: #1e3a1e; color: white; border: none; padding: 8px 20px; border-radius: 25px; cursor: pointer; margin-top: 8px; font-size: 14px; }
+    .cart { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 3px solid #1e3a1e; padding: 15px; max-height: 50%; overflow-y: auto; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); }
+    .cart h3 { color: #1e3a1e; margin-bottom: 10px; }
+    .cart-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
+    .cart-total { font-weight: bold; font-size: 1.2em; margin: 10px 0; text-align: right; }
+    .submit-btn { background: #d4af37; color: #1e3a1e; border: none; padding: 12px 25px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; width: 100%; }
+    .remove-btn { background: #ff4444; color: white; border: none; padding: 2px 10px; border-radius: 15px; cursor: pointer; margin-left: 10px; }
   </style>
 </head>
 <body>
-  <h1>🍽️ ΟΘΟΝΗ ΚΟΥΖΙΝΑΣ - ΜΠΑΡ</h1>
-  <div class="orders-container" id="orders-container">
-    <div class="no-orders">⏳ Περιμένοντας παραγγελίες...</div>
+  <header>
+    <h1>☕ Edelweiss Café</h1>
+    <div class="table-selector">
+      <label>📍 Τραπέζι:</label>
+      <select id="tableSelect"></select>
+    </div>
+  </header>
+  <div class="categories" id="categories"></div>
+  <div class="products" id="products"></div>
+  <div class="cart" id="cart">
+    <h3>🛒 Καλάθι Παραγγελίας</h3>
+    <div id="cartItems"></div>
+    <div class="cart-total" id="cartTotal">Σύνολο: 0.00 €</div>
+    <button class="submit-btn" id="submitOrder">📝 Υποβολή Παραγγελίας</button>
   </div>
-
   <script>
-    let audio = new Audio('https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3');
-    let orders = [];
-    
-    // Φόρτωσε τις υπάρχουσες παραγγελίες από το localStorage
-    function loadOrders() {
-      const savedOrders = localStorage.getItem('kitchen_orders_list');
-      if (savedOrders) {
-        try {
-          orders = JSON.parse(savedOrders);
-        } catch(e) {}
-      }
-      displayOrders();
-    }
-    
-    // Έλεγχος για νέα παραγγελία
-    function checkForNewOrder() {
-      const newOrderRaw = localStorage.getItem('kitchen_new_order');
-      if (newOrderRaw) {
-        localStorage.removeItem('kitchen_new_order');
-        try {
-          const newOrder = JSON.parse(newOrderRaw);
-          newOrder.id = Date.now().toString();
-          orders.unshift(newOrder);
-          saveOrders();
-          playSoundAndVibrate();
-          displayOrders();
-        } catch(e) {}
+    let menuData = { tables: [], categories: [], products: [] };
+    let cart = [];
+    let currentLang = 'el';
+    let currentCategory = null;
+
+    async function loadData() {
+      try {
+        const response = await fetch('order.json?' + Date.now());
+        menuData = await response.json();
+        populateTables();
+        renderCategories();
+        if (menuData.categories.length > 0) showCategory(menuData.categories[0].id);
+      } catch(error) {
+        document.getElementById('products').innerHTML = '<p style="text-align:center;padding:50px;">❌ Σφάλμα φόρτωσης μενού</p>';
       }
     }
-    
-    // Αποθήκευση όλων των παραγγελιών
-    function saveOrders() {
-      localStorage.setItem('kitchen_orders_list', JSON.stringify(orders));
-    }
-    
-    function playSoundAndVibrate() {
-      audio.play();
-      if (navigator.vibrate) navigator.vibrate(500);
-    }
-    
-    function displayOrders() {
-      const container = document.getElementById('orders-container');
-      if (orders.length === 0) {
-        container.innerHTML = '<div class="no-orders">✅ ΟΛΕΣ ΟΙ ΠΑΡΑΓΓΕΛΙΕΣ ΕΧΟΥΝ ΟΛΟΚΛΗΡΩΘΕΙ!</div>';
-        return;
-      }
-      
-      container.innerHTML = '';
-      orders.forEach(order => {
-        const card = document.createElement('div');
-        card.className = 'order-card';
-        let itemsHtml = '';
-        order.items.forEach(item => {
-          const subtotal = item.price * item.quantity;
-          itemsHtml += `<li>${item.quantity}x ${item.name} - ${subtotal.toFixed(2)}€</li>`;
-        });
-        card.innerHTML = `
-          <div class="order-header">
-            <span class="table-num">Τραπέζι ${order.table}</span>
-            <span class="time">${order.time}</span>
-          </div>
-          <ul class="order-items">${itemsHtml}</ul>
-          <div class="order-total">Σύνολο: ${order.total.toFixed(2)}€</div>
-          <button class="complete-btn" onclick="completeOrder('${order.id}')">✅ ΟΛΟΚΛΗΡΩΘΗΚΕ</button>
-        `;
-        container.appendChild(card);
+
+    function populateTables() {
+      const select = document.getElementById('tableSelect');
+      select.innerHTML = '';
+      menuData.tables.forEach(table => {
+        const option = document.createElement('option');
+        option.value = table;
+        option.textContent = `Τραπέζι ${table}`;
+        select.appendChild(option);
       });
     }
-    
-    function completeOrder(orderId) {
-      orders = orders.filter(o => o.id !== orderId);
-      saveOrders();
-      displayOrders();
+
+    function renderCategories() {
+      const container = document.getElementById('categories');
+      container.innerHTML = '';
+      menuData.categories.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = `cat-btn ${cat.id === currentCategory ? 'active' : ''}`;
+        btn.textContent = cat.name[currentLang] || cat.name.el;
+        btn.onclick = () => showCategory(cat.id);
+        container.appendChild(btn);
+      });
     }
-    
-    // Έλεγχος κάθε 2 δευτερόλεπτα για νέες παραγγελίες
-    setInterval(checkForNewOrder, 2000);
-    
-    // Φόρτωσε υπάρχουσες παραγγελίες
-    loadOrders();
+
+    function showCategory(catId) {
+      currentCategory = catId;
+      renderCategories();
+      const container = document.getElementById('products');
+      const filtered = menuData.products.filter(p => p.category === catId);
+      if (filtered.length === 0) {
+        container.innerHTML = '<p style="text-align:center;padding:50px;">Δεν υπάρχουν προϊόντα σε αυτή την κατηγορία</p>';
+        return;
+      }
+      container.innerHTML = '';
+      filtered.forEach(product => {
+        const div = document.createElement('div');
+        div.className = 'product';
+        div.innerHTML = `
+          <img src="${product.image}" alt="${product.name.el}">
+          <div class="product-info">
+            <div class="product-name">${product.name.el}</div>
+            <div class="product-desc">${product.description ? product.description.el : ''}</div>
+            <div class="product-price">${product.price.toFixed(2)} €</div>
+            <button class="add-btn" data-name="${product.name.el.replace(/"/g, '&quot;')}">➕ Προσθήκη</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+      document.querySelectorAll('.add-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const productName = btn.getAttribute('data-name');
+          const product = menuData.products.find(p => p.name.el === productName);
+          if (product) addToCart(product);
+        });
+      });
+    }
+
+    function addToCart(product) {
+      const existing = cart.find(item => item.product.name.el === product.name.el);
+      if (existing) existing.quantity++;
+      else cart.push({ product, quantity: 1 });
+      renderCart();
+    }
+
+    function removeFromCart(productName) {
+      const index = cart.findIndex(item => item.product.name.el === productName);
+      if (index > -1) {
+        if (cart[index].quantity > 1) cart[index].quantity--;
+        else cart.splice(index, 1);
+      }
+      renderCart();
+    }
+
+    function renderCart() {
+      const container = document.getElementById('cartItems');
+      const totalElement = document.getElementById('cartTotal');
+      container.innerHTML = '';
+      let total = 0;
+      cart.forEach(item => {
+        const subtotal = item.product.price * item.quantity;
+        total += subtotal;
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `<span>${item.product.name.el} x${item.quantity}</span><span>${subtotal.toFixed(2)} € <button class="remove-btn" data-name="${item.product.name.el.replace(/"/g, '&quot;')}">−</button></span>`;
+        container.appendChild(div);
+      });
+      totalElement.textContent = `Σύνολο: ${total.toFixed(2)} €`;
+      document.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', () => removeFromCart(btn.getAttribute('data-name')));
+      });
+    }
+
+    document.getElementById('submitOrder').addEventListener('click', async () => {
+      const table = document.getElementById('tableSelect').value;
+      if (cart.length === 0) {
+        alert('Το καλάθι είναι άδειο!');
+        return;
+      }
+      let itemsText = '';
+      cart.forEach(item => {
+        itemsText += `${item.quantity}x ${item.product.name.el} - ${(item.product.price * item.quantity).toFixed(2)}€\n`;
+      });
+      const total = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+      const message = `🔔 ΝΕΑ ΠΑΡΑΓΓΕΛΙΑ 🔔\n\n📌 Τραπέζι: ${table}\n\n📋 Παραγγελία:\n${itemsText}\n💰 Σύνολο: ${total.toFixed(2)}€\n\n⏰ ${new Date().toLocaleString()}`;
+      
+      // ΑΝΟΙΓΕΙ EMAIL ΜΕ ΤΗΝ ΠΑΡΑΓΓΕΛΙΑ
+      window.location.href = `mailto:edelweisskafe@gmail.com?subject=ΠΑΡΑΓΓΕΛΙΑ ΑΠΟ ΤΡΑΠΕΖΙ ${table}&body=${encodeURIComponent(message)}`;
+      
+      // ΕΝΗΜΕΡΩΣΗ ΠΕΛΑΤΗ
+      alert('✅ Η παραγγελία καταχωρήθηκε! Παρακαλώ πατήστε Αποστολή email για να ολοκληρωθεί.');
+      
+      // Αποθήκευση για την οθόνη κουζίνας
+      localStorage.setItem('kitchen_new_order', JSON.stringify({
+        table: table,
+        items: cart.map(i => ({ name: i.product.name.el, quantity: i.quantity, price: i.product.price })),
+        total: total,
+        time: new Date().toLocaleTimeString()
+      }));
+      
+      cart = [];
+      renderCart();
+    });
+
+    loadData();
   </script>
 </body>
 </html>
