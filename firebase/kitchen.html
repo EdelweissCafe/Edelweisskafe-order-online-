@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Οθόνη Κουζίνας - Edelweiss Café</title>
+  <style>
+    body{font-family:Arial,sans-serif;background:#1a1a2e;color:white;padding:20px;}
+    h1{text-align:center;color:#d4af37;margin-bottom:20px;}
+    .order-card{background:#16213e;border-radius:15px;padding:15px;margin-bottom:15px;border-left:6px solid #d4af37;}
+    .order-header{display:flex;justify-content:space-between;margin-bottom:10px;}
+    .order-items li{margin:5px 0;}
+  </style>
+</head>
+<body>
+  <h1>🍽️ Οθόνη Κουζίνας</h1>
+  <div id="ordersContainer">⏳ Περιμένοντας παραγγελίες...</div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "edelweisscafeplus.firebaseapp.com",
+      databaseURL: "https://edelweisscafeplus-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "edelweisscafeplus",
+      storageBucket: "edelweisscafeplus.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const ordersContainer = document.getElementById('ordersContainer');
+
+    db.ref('orders').on('value', snapshot=>{
+      const orders = snapshot.val();
+      if(!orders){ ordersContainer.innerHTML='✅ ΟΛΕΣ ΟΙ ΠΑΡΑΓΓΕΛΙΕΣ ΕΧΟΥΝ ΟΛΟΚΛΗΡΩΘΕΙ!'; return; }
+      ordersContainer.innerHTML='';
+      Object.entries(orders).forEach(([key, order])=>{
+        let itemsHtml='';
+        order.items.forEach(i=>{ itemsHtml+=`<li>${i.qty}x ${i.name} - ${(i.price*i.qty).toFixed(2)}€</li>`; });
+        ordersContainer.innerHTML += `<div class="order-card">
+          <div class="order-header"><span>Τραπέζι ${order.table}</span><span>${order.time}</span></div>
+          <ul class="order-items">${itemsHtml}</ul>
+        </div>`;
+      });
+    });
+  </script>
+</body>
+</html>
