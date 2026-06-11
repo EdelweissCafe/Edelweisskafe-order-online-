@@ -157,8 +157,7 @@
       });
     }
 
-    // Event listener για το κουμπί υποβολής - ΕΚΔΟΣΗ ΜΕ EMAIL
-    document.getElementById('submitOrder').addEventListener('click', () => {
+    document.getElementById('submitOrder').addEventListener('click', async () => {
       const table = document.getElementById('tableSelect').value;
       if (cart.length === 0) {
         alert('Το καλάθι είναι άδειο!');
@@ -172,18 +171,25 @@
       const total = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
       const message = `🔔 ΝΕΑ ΠΑΡΑΓΓΕΛΙΑ 🔔\n\n📌 Τραπέζι: ${table}\n\n📋 Παραγγελία:\n${itemsText}\n💰 Σύνολο: ${total.toFixed(2)}€\n\n⏰ ${new Date().toLocaleString()}`;
       
-      // ΑΝΟΙΓΕΙ EMAIL ΜΕ ΤΗΝ ΠΑΡΑΓΓΕΛΙΑ
-      window.location.href = `mailto:edelweisskafe@gmail.com?subject=📢 ΠΑΡΑΓΓΕΛΙΑ ΑΠΟ ΤΡΑΠΕΖΙ ${table}&body=${encodeURIComponent(message)}`;
+      // ΑΝΟΙΓΕΙ EMAIL
+      window.location.href = `mailto:edelweisskafe@gmail.com?subject=ΠΑΡΑΓΓΕΛΙΑ ΑΠΟ ΤΡΑΠΕΖΙ ${table}&body=${encodeURIComponent(message)}`;
       
-      // ΕΝΗΜΕΡΩΣΗ ΠΕΛΑΤΗ
+      // ΑΠΟΘΗΚΕΥΣΗ ΓΙΑ ΤΟ TABLET (ΚΟΥΖΙΝΑ)
+      try {
+        const orderForKitchen = {
+          table: table,
+          items: cart.map(i => ({ name: i.product.name.el, quantity: i.quantity, price: i.product.price })),
+          total: total,
+          time: new Date().toLocaleTimeString()
+        };
+        localStorage.setItem('kitchen_new_order', JSON.stringify(orderForKitchen));
+        console.log('Αποθηκεύτηκε για το tablet:', orderForKitchen);
+      } catch(e) {
+        console.error('Σφάλμα αποθήκευσης:', e);
+      }
+      
       alert('✅ Η παραγγελία καταχωρήθηκε! Παρακαλώ πατήστε Αποστολή email για να ολοκληρωθεί.');
-// Αποθήκευση για την οθόνη κουζίνας
-localStorage.setItem('kitchen_new_order', JSON.stringify({
-  table: table,
-  items: cart.map(i => ({ name: i.product.name.el, quantity: i.quantity, price: i.product.price })),
-  total: total,
-  time: new Date().toLocaleTimeString()
-}));      
+      
       cart = [];
       renderCart();
     });
