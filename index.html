@@ -177,7 +177,13 @@
       
       // ΕΝΗΜΕΡΩΣΗ ΠΕΛΑΤΗ
       alert('✅ Η παραγγελία καταχωρήθηκε! Παρακαλώ πατήστε Αποστολή email για να ολοκληρωθεί.');
-      
+// Αποθήκευση για την οθόνη κουζίνας
+localStorage.setItem('kitchen_new_order', JSON.stringify({
+  table: table,
+  items: cart.map(i => ({ name: i.product.name.el, quantity: i.quantity, price: i.product.price })),
+  total: total,
+  time: new Date().toLocaleTimeString()
+}));      
       cart = [];
       renderCart();
     });
