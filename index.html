@@ -339,11 +339,11 @@
       const message = `🔔 ΝΕΑ ΠΑΡΑΓΓΕΛΙΑ 🔔\n\n📌 Τραπέζι: ${table}\n\n📋 Παραγγελία:\n${itemsText}\n💰 Σύνολο: ${total.toFixed(2)}€\n\n⏰ ${new Date().toLocaleString()}`;
       
       // ΠΑΡΑΚΑΛΩ ΒΑΛΕ ΤΑ ΣΤΟΙΧΕΙΑ ΣΟΥ ΕΔΩ:
-      const BOT_TOKEN = 8925604839:AAG5KL_oiuH3X9Eq91FPq5u2EKf7onWyXP8;
-      const CHAT_ID = 8777877765926;
+      const BOT_TOKEN = '8925604839:AAG5KL_oiuH3X9Eq91FPq5u2EKf7onWyXP8';
+      const CHAT_ID = '8777877765926';
       
       // Αποστολή στο Telegram (αν υπάρχουν τα στοιχεία)
-      if (BOT_TOKEN !== 8925604839:AAG5KL_oiuH3X9Eq91FPq5u2EKf7onWyXP8 && CHAT_ID !== 877765926 ) {
+      if (BOT_TOKEN !== '8925604839:AAG5KL_oiuH3X9Eq91FPq5u2EKf7onWyXP8' && CHAT_ID !== '877765926' ) {
         try {
           await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
             method: 'POST',
