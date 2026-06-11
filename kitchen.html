@@ -38,13 +38,6 @@
       from { opacity: 0; transform: translateX(50px); }
       to { opacity: 1; transform: translateX(0); }
     }
-    .order-card.new {
-      animation: blink 0.5s 3;
-    }
-    @keyframes blink {
-      0%, 100% { background: #16213e; }
-      50% { background: #d4af37; color: #16213e; }
-    }
     .order-header {
       display: flex;
       justify-content: space-between;
@@ -108,69 +101,86 @@
   </div>
 
   <script>
-    let lastOrderCount = 0;
     let audio = new Audio('https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3');
-    audio.load();
+    let orders = [];
     
-    async function loadOrders() {
-      try {
-        const response = await fetch('orders.json?' + Date.now());
-        const orders = await response.json();
-        
-        const container = document.getElementById('orders-container');
-        
-        if (orders.length === 0) {
-          container.innerHTML = '<div class="no-orders">✅ ΟΛΕΣ ΟΙ ΠΑΡΑΓΓΕΛΙΕΣ ΕΧΟΥΝ ΟΛΟΚΛΗΡΩΘΕΙ!</div>';
-          lastOrderCount = 0;
-          return;
-        }
-        
-        if (orders.length > lastOrderCount && lastOrderCount !== 0) {
-          audio.play();
-          if (navigator.vibrate) navigator.vibrate(500);
-        }
-        
-        lastOrderCount = orders.length;
-        
-        container.innerHTML = '';
-        orders.forEach(order => {
-          const card = document.createElement('div');
-          card.className = 'order-card';
-          
-          let itemsHtml = '';
-          order.items.forEach(item => {
-            itemsHtml += `<li>${item.quantity}x ${item.name} - ${item.price.toFixed(2)}€</li>`;
-          });
-          
-          card.innerHTML = `
-            <div class="order-header">
-              <span class="table-num">Τραπέζι ${order.table}</span>
-              <span class="time">${order.time}</span>
-            </div>
-            <ul class="order-items">
-              ${itemsHtml}
-            </ul>
-            <div class="order-total">Σύνολο: ${order.total.toFixed(2)}€</div>
-            <button class="complete-btn" onclick="completeOrder('${order.id}')">✅ ΟΛΟΚΛΗΡΩΘΗΚΕ</button>
-          `;
-          container.appendChild(card);
-        });
-      } catch(error) {
-        console.error('Σφάλμα φόρτωσης:', error);
+    // Φόρτωσε τις υπάρχουσες παραγγελίες από το localStorage
+    function loadOrders() {
+      const savedOrders = localStorage.getItem('kitchen_orders_list');
+      if (savedOrders) {
+        try {
+          orders = JSON.parse(savedOrders);
+        } catch(e) {}
+      }
+      displayOrders();
+    }
+    
+    // Έλεγχος για νέα παραγγελία
+    function checkForNewOrder() {
+      const newOrderRaw = localStorage.getItem('kitchen_new_order');
+      if (newOrderRaw) {
+        localStorage.removeItem('kitchen_new_order');
+        try {
+          const newOrder = JSON.parse(newOrderRaw);
+          newOrder.id = Date.now().toString();
+          orders.unshift(newOrder);
+          saveOrders();
+          playSoundAndVibrate();
+          displayOrders();
+        } catch(e) {}
       }
     }
     
-    async function completeOrder(orderId) {
-      await fetch('complete-order.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: orderId })
-      });
-      loadOrders();
+    // Αποθήκευση όλων των παραγγελιών
+    function saveOrders() {
+      localStorage.setItem('kitchen_orders_list', JSON.stringify(orders));
     }
     
+    function playSoundAndVibrate() {
+      audio.play();
+      if (navigator.vibrate) navigator.vibrate(500);
+    }
+    
+    function displayOrders() {
+      const container = document.getElementById('orders-container');
+      if (orders.length === 0) {
+        container.innerHTML = '<div class="no-orders">✅ ΟΛΕΣ ΟΙ ΠΑΡΑΓΓΕΛΙΕΣ ΕΧΟΥΝ ΟΛΟΚΛΗΡΩΘΕΙ!</div>';
+        return;
+      }
+      
+      container.innerHTML = '';
+      orders.forEach(order => {
+        const card = document.createElement('div');
+        card.className = 'order-card';
+        let itemsHtml = '';
+        order.items.forEach(item => {
+          const subtotal = item.price * item.quantity;
+          itemsHtml += `<li>${item.quantity}x ${item.name} - ${subtotal.toFixed(2)}€</li>`;
+        });
+        card.innerHTML = `
+          <div class="order-header">
+            <span class="table-num">Τραπέζι ${order.table}</span>
+            <span class="time">${order.time}</span>
+          </div>
+          <ul class="order-items">${itemsHtml}</ul>
+          <div class="order-total">Σύνολο: ${order.total.toFixed(2)}€</div>
+          <button class="complete-btn" onclick="completeOrder('${order.id}')">✅ ΟΛΟΚΛΗΡΩΘΗΚΕ</button>
+        `;
+        container.appendChild(card);
+      });
+    }
+    
+    function completeOrder(orderId) {
+      orders = orders.filter(o => o.id !== orderId);
+      saveOrders();
+      displayOrders();
+    }
+    
+    // Έλεγχος κάθε 2 δευτερόλεπτα για νέες παραγγελίες
+    setInterval(checkForNewOrder, 2000);
+    
+    // Φόρτωσε υπάρχουσες παραγγελίες
     loadOrders();
-    setInterval(loadOrders, 3000);
   </script>
 </body>
 </html>
