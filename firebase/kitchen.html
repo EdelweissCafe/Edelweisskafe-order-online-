@@ -120,43 +120,55 @@
 
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
-
-    // ΔΥΝΑΤΟΣ ΗΧΟΣ (0.8) + ΔΙΠΛΟ BEEP
-    function playBeep() {
-      try {
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        
-        // Πρώτο beep (υψηλό)
-        const oscillator = audioCtx.createOscillator();
-        const gainNode = audioCtx.createGain();
-        oscillator.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
-        oscillator.frequency.value = 880;
-        gainNode.gain.value = 0.8; // ΔΥΝΑΤΑ
-        oscillator.start();
-        gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.5);
-        oscillator.stop(audioCtx.currentTime + 0.5);
-        
-        // Δεύτερο beep (χαμηλότερο, μετά από 0.2 δευτ.)
-        setTimeout(() => {
-          const osc2 = audioCtx.createOscillator();
-          const gain2 = audioCtx.createGain();
-          osc2.connect(gain2);
-          gain2.connect(audioCtx.destination);
-          osc2.frequency.value = 660;
-          gain2.gain.value = 0.7;
-          osc2.start();
-          gain2.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.4);
-          osc2.stop(audioCtx.currentTime + 0.4);
-        }, 200);
-        
-      } catch(e) {
-        console.log('Cannot play beep sound');
-      }
-      
-      // Δόνηση (παρατεταμένη)
-      if (navigator.vibrate) navigator.vibrate([400, 200, 400]);
-    }
+// ΠΟΛΥ ΔΥΝΑΤΟΣ ΗΧΟΣ (ένταση 1.0) + ΤΡΙΠΛΟ BEEP
+function playBeep() {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    // Πρώτο beep (υψηλό - μέγιστη ένταση)
+    const osc1 = audioCtx.createOscillator();
+    const gain1 = audioCtx.createGain();
+    osc1.connect(gain1);
+    gain1.connect(audioCtx.destination);
+    osc1.frequency.value = 880;
+    gain1.gain.value = 1.0; // ΜΕΓΙΣΤΗ ΕΝΤΑΣΗ
+    osc1.start();
+    gain1.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.4);
+    osc1.stop(audioCtx.currentTime + 0.4);
+    
+    // Δεύτερο beep (χαμηλότερο)
+    setTimeout(() => {
+      const osc2 = audioCtx.createOscillator();
+      const gain2 = audioCtx.createGain();
+      osc2.connect(gain2);
+      gain2.connect(audioCtx.destination);
+      osc2.frequency.value = 660;
+      gain2.gain.value = 0.9;
+      osc2.start();
+      gain2.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.3);
+      osc2.stop(audioCtx.currentTime + 0.3);
+    }, 150);
+    
+    // Τρίτο beep (ακόμα πιο υψηλό)
+    setTimeout(() => {
+      const osc3 = audioCtx.createOscillator();
+      const gain3 = audioCtx.createGain();
+      osc3.connect(gain3);
+      gain3.connect(audioCtx.destination);
+      osc3.frequency.value = 1000;
+      gain3.gain.value = 0.8;
+      osc3.start();
+      gain3.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.3);
+      osc3.stop(audioCtx.currentTime + 0.3);
+    }, 300);
+    
+  } catch(e) {
+    console.log('Cannot play beep sound');
+  }
+  
+  // Δόνηση
+  if (navigator.vibrate) navigator.vibrate([500, 200, 500, 200, 500]);
+}
 
     function displayOrder(orderId, order) {
       const container = document.getElementById('orders-container');
