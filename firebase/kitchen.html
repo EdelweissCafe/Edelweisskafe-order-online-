@@ -121,75 +121,46 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    // ΗΧΟΣ BEEP (υψηλός και δυνατός) - σίγουρη λύση
+    // ΔΗΜΙΟΥΡΓΙΑ ΔΥΝΑΤΟΥ ΗΧΟΥ (χωρίς εξωτερικά αρχεία)
     let audioCtx = null;
+    let isAudioEnabled = false;
     
-    function playBeep() {
+    function playSound() {
       try {
         if (!audioCtx) {
           audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         }
         
-        // Δύο ταυτόχρονοι ήχοι για διπλή ένταση
-        const osc1 = audioCtx.createOscillator();
-        const osc2 = audioCtx.createOscillator();
-        const gain1 = audioCtx.createGain();
-        const gain2 = audioCtx.createGain();
+        // Ξύπνημα του ήχου αν χρειάζεται
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
         
-        osc1.connect(gain1);
-        osc2.connect(gain2);
-        gain1.connect(audioCtx.destination);
-        gain2.connect(audioCtx.destination);
-        
-        osc1.frequency.value = 1200;
-        osc2.frequency.value = 800;
-        
-        gain1.gain.value = 0.5;
-        gain2.gain.value = 0.5;
-        
-        osc1.start();
-        osc2.start();
-        
-        gain1.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.3);
-        gain2.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.3);
-        
-        osc1.stop(audioCtx.currentTime + 0.3);
-        osc2.stop(audioCtx.currentTime + 0.3);
-        
-        // Δεύτερη ριπή (πιο κοφτή)
-        setTimeout(() => {
-          const osc3 = audioCtx.createOscillator();
-          const osc4 = audioCtx.createOscillator();
-          const gain3 = audioCtx.createGain();
-          const gain4 = audioCtx.createGain();
-          
-          osc3.connect(gain3);
-          osc4.connect(gain4);
-          gain3.connect(audioCtx.destination);
-          gain4.connect(audioCtx.destination);
-          
-          osc3.frequency.value = 1200;
-          osc4.frequency.value = 800;
-          
-          gain3.gain.value = 0.5;
-          gain4.gain.value = 0.5;
-          
-          osc3.start();
-          osc4.start();
-          
-          gain3.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.2);
-          gain4.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.2);
-          
-          osc3.stop(audioCtx.currentTime + 0.2);
-          osc4.stop(audioCtx.currentTime + 0.2);
-        }, 350);
-        
+        // Δημιουργία σύνθετου ήχου (τριπλό beep)
+        for (let i = 0; i < 3; i++) {
+          setTimeout(() => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            // Διαφορετικές συχνότητες για κάθε beep
+            if (i === 0) osc.frequency.value = 1000;
+            if (i === 1) osc.frequency.value = 800;
+            if (i === 2) osc.frequency.value = 1200;
+            
+            gain.gain.value = 0.8; // Δυνατά
+            
+            osc.start();
+            gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.3);
+            osc.stop(audioCtx.currentTime + 0.3);
+          }, i * 200);
+        }
       } catch(e) {
-        console.log('Cannot play sound:', e);
+        console.log('Sound error:', e);
       }
       
-      // Δόνηση
-      if (navigator.vibrate) navigator.vibrate([300, 150, 300]);
+      if (navigator.vibrate) navigator.vibrate([400, 200, 400]);
     }
 
     function displayOrder(orderId, order) {
@@ -224,7 +195,7 @@
       `;
       
       container.insertBefore(card, container.firstChild);
-      playBeep();
+      playSound();
       
       setTimeout(() => {
         card.style.animation = 'none';
@@ -269,12 +240,12 @@
       });
     });
 
-    // Ενεργοποίηση ήχου μετά από πρώτο tap
+    // Ενεργοποίηση ήχου με το πρώτο tap (απαραίτητο για browsers)
     document.body.addEventListener('click', () => {
-      if (audioCtx) {
-        audioCtx.resume().catch(e => {});
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
       }
-    }, { once: true });
+    });
   </script>
 </body>
 </html>
