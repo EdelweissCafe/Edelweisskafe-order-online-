@@ -75,12 +75,14 @@
 
     async function loadData() {
       try {
-        const response = await fetch('order.json?' + Date.now());
+        // Ψάχνει στο κεντρικό repository (ένα επίπεδο πάνω)
+        const response = await fetch('../order.json?' + Date.now());
         menuData = await response.json();
         populateTables();
         renderCategories();
         if (menuData.categories.length > 0) showCategory(menuData.categories[0].id);
       } catch(error) {
+        console.error('Σφάλμα φόρτωσης:', error);
         document.getElementById('products').innerHTML = '<p style="text-align:center;padding:50px;">❌ Σφάλμα φόρτωσης μενού</p>';
       }
     }
@@ -122,7 +124,7 @@
         const div = document.createElement('div');
         div.className = 'product';
         div.innerHTML = `
-          <img src="${product.image}" alt="${product.name.el}">
+          <img src="../${product.image}" alt="${product.name.el}">
           <div class="product-info">
             <div class="product-name">${product.name.el}</div>
             <div class="product-desc">${product.description ? product.description.el : ''}</div>
