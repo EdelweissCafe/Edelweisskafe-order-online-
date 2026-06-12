@@ -121,37 +121,75 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    // ΗΧΟΣ ΚΛΑΣΙΚΟΥ ΤΗΛΕΦΩΝΟΥ από soundjay
-    let ringtoneAudio = null;
+    // ΗΧΟΣ BEEP (υψηλός και δυνατός) - σίγουρη λύση
+    let audioCtx = null;
     
     function playBeep() {
       try {
-        if (!ringtoneAudio) {
-          ringtoneAudio = new Audio('https://www.soundjay.com/phone/sounds/old-phone-ring-01.mp3');
-          ringtoneAudio.load();
-          ringtoneAudio.volume = 1.0; // Μέγιστη ένταση
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         }
         
-        // Σταμάτα αν παίζει ήδη
-        ringtoneAudio.pause();
-        ringtoneAudio.currentTime = 0;
+        // Δύο ταυτόχρονοι ήχοι για διπλή ένταση
+        const osc1 = audioCtx.createOscillator();
+        const osc2 = audioCtx.createOscillator();
+        const gain1 = audioCtx.createGain();
+        const gain2 = audioCtx.createGain();
         
-        // Παίξε τον ήχο
-        ringtoneAudio.play().catch(e => console.log('Audio play failed:', e));
+        osc1.connect(gain1);
+        osc2.connect(gain2);
+        gain1.connect(audioCtx.destination);
+        gain2.connect(audioCtx.destination);
         
-        // Παίξε και δεύτερη φορά (για πιο δυνατή ειδοποίηση)
+        osc1.frequency.value = 1200;
+        osc2.frequency.value = 800;
+        
+        gain1.gain.value = 0.5;
+        gain2.gain.value = 0.5;
+        
+        osc1.start();
+        osc2.start();
+        
+        gain1.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.3);
+        gain2.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.3);
+        
+        osc1.stop(audioCtx.currentTime + 0.3);
+        osc2.stop(audioCtx.currentTime + 0.3);
+        
+        // Δεύτερη ριπή (πιο κοφτή)
         setTimeout(() => {
-          const ring2 = new Audio('https://www.soundjay.com/phone/sounds/old-phone-ring-01.mp3');
-          ring2.volume = 1.0;
-          ring2.play().catch(e => {});
-        }, 800);
+          const osc3 = audioCtx.createOscillator();
+          const osc4 = audioCtx.createOscillator();
+          const gain3 = audioCtx.createGain();
+          const gain4 = audioCtx.createGain();
+          
+          osc3.connect(gain3);
+          osc4.connect(gain4);
+          gain3.connect(audioCtx.destination);
+          gain4.connect(audioCtx.destination);
+          
+          osc3.frequency.value = 1200;
+          osc4.frequency.value = 800;
+          
+          gain3.gain.value = 0.5;
+          gain4.gain.value = 0.5;
+          
+          osc3.start();
+          osc4.start();
+          
+          gain3.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.2);
+          gain4.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.2);
+          
+          osc3.stop(audioCtx.currentTime + 0.2);
+          osc4.stop(audioCtx.currentTime + 0.2);
+        }, 350);
         
       } catch(e) {
-        console.log('Cannot play sound');
+        console.log('Cannot play sound:', e);
       }
       
       // Δόνηση
-      if (navigator.vibrate) navigator.vibrate([400, 200, 400, 200, 400]);
+      if (navigator.vibrate) navigator.vibrate([300, 150, 300]);
     }
 
     function displayOrder(orderId, order) {
@@ -186,7 +224,7 @@
       `;
       
       container.insertBefore(card, container.firstChild);
-      playBeep(); // ΗΧΟΣ ΤΗΛΕΦΩΝΟΥ!
+      playBeep();
       
       setTimeout(() => {
         card.style.animation = 'none';
@@ -233,10 +271,9 @@
 
     // Ενεργοποίηση ήχου μετά από πρώτο tap
     document.body.addEventListener('click', () => {
-      try {
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        audioCtx.resume();
-      } catch(e) {}
+      if (audioCtx) {
+        audioCtx.resume().catch(e => {});
+      }
     }, { once: true });
   </script>
 </body>
