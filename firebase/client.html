@@ -324,8 +324,8 @@
       const opts = item.options || { sugar: 'Σκέτος', substitute: null, milk: null };
       document.getElementById('editOptions').innerHTML = `
         <div class="modal-option-group"><label>🍬 Ζάχαρη</label><div class="radio-group-modal">${['Σκέτος','Μέτριος','Γλυκός','Πολύ γλυκός'].map(v => `<label><input type="radio" name="edit_sugar" value="${v}" ${opts.sugar === v ? 'checked' : ''}> ${v}</label>`).join('')}</div></div>
-        <div class="modal-option-group"><label>🌿 Υποκατάστατο</label><div class="radio-group-modal">${['','Μαύρη ζάχαρη','Στέβια','Ζαχαρίνη','Natreen'].map(v => `<label><input type="radio" name="edit_sub" value="${v}" ${opts.substitute === v ? 'checked' : ''}> ${v || 'Κανένα'}</label>`).join('')}</div></div>
-        <div class="modal-option-group"><label>🥛 Γάλα</label><div class="radio-group-modal">${['','Φρέσκο γάλα','Εβαπορέ','Αμυγδάλου'].map(v => `<label><input type="radio" name="edit_milk" value="${v}" ${opts.milk === v ? 'checked' : ''}> ${v || 'Κανένα'}</label>`).join('')}</div></div>
+        <div class="modal-option-group"><label>🌿 Υποκατάστατο</label><div class="radio-group-modal">${['','Μαύρη ζάχαρη','Στέβια','Ζαχαρίνη','Natreen'].map(v => `<label><input type="radio" name="edit_sub" value="${v}" ${opts.substitute === v ? 'checked' : ''}> ${v || 'Κανέλα'}</label>`).join('')}</div></div>
+        <div class="modal-option-group"><label>🥛 Γάλα</label><div class="radio-group-modal">${['','Φρέσκο γάλα','Εβαπορέ','Αμυγδάλου'].map(v => `<label><input type="radio" name="edit_milk" value="${v}" ${opts.milk === v ? 'checked' : ''}> ${v || 'Κανέλα'}</label>`).join('')}</div></div>
       `;
       document.getElementById('editModal').style.display = 'flex';
     }
