@@ -583,6 +583,48 @@
     },
     {
       "category": "pagota",
+      "name": {"el": "Καραμέλα"},
+      "price": 2.5,
+      "image": "foto/K5.jpg",
+      "description": {"el": "Παγωτό καραμέλα με κομμάτια καραμέλας"}
+    },
+    {
+      "category": "pagota",
+      "name": {"el": "Φυστίκι"},
+      "price": 2.5,
+      "image": "foto/K4.jpg",
+      "description": {"el": "Παγωτό με γεύση φιστίκι με κομμάτια φιστίκι"}
+    },
+    {
+      "category": "pagota",
+      "name": {"el": "Φυστίκι"},
+      "price": 2.5,
+      "image": "foto/K4.jpg",
+      "description": {"el": "Παγωτό με γεύση φιστίκι με κομμάτια φιστίκι"}
+    },
+    {
+      "category": "pagota",
+      "name": {"el": "Φυστίκι"},
+      "price": 2.5,
+      "image": "foto/K4.jpg",
+      "description": {"el": "Παγωτό με γεύση φιστίκι με κομμάτια φιστίκι"}
+    },
+    {
+      "category": "pagota",
+      "name": {"el": "Φυστίκι"},
+      "price": 2.5,
+      "image": "foto/K4.jpg",
+      "description": {"el": "Παγωτό με γεύση φιστίκι με κομμάτια φιστίκι"}
+    },
+    {
+      "category": "pagota",
+      "name": {"el": "Φυστίκι"},
+      "price": 2.5,
+      "image": "foto/K4.jpg",
+      "description": {"el": "Παγωτό με γεύση φιστίκι με κομμάτια φιστίκι"}
+    },
+    {
+      "category": "pagota",
       "name": {"el": "Γιαούρτι & Μέλι"},
       "price": 2.5,
       "image": "foto/K5.jpg",
