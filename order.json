@@ -597,17 +597,17 @@
     },
     {
       "category": "pagota",
-      "name": {"el": "Λεμόνι"},
+      "name": {"el": "Φράουλα"},
       "price": 2.5,
       "image": "foto/K7.jpg",
-      "description": {"el": "Παγωτό με γεύση λεμόνι"}
+      "description": {"el": "Παγωτό με γεύση φράουλα"}
     },
     {
       "category": "pagota",
-      "name": {"el": "Φράουλα"},
+      "name": {"el": "Λεμόνι"},
       "price": 2.5,
       "image": "foto/K8.jpg",
-      "description": {"el": "Παγωτό με γεύση φράουλα"}
+      "description": {"el": "Παγωτό με γεύση λεμόνι"}
     },
     {
       "category": "pagota",
