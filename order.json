@@ -318,7 +318,7 @@
     {
       "category": "anapsyktika",
       "name": {"el": "Νερό Μικρό (500ml)"},
-      "price": 3,
+      "price": 0.5,
       "image": "foto/E9.jpg",
       "description": {"el": "Φυσικό μεταλλικό νερό 500ml"}
     },
