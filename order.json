@@ -597,24 +597,24 @@
     },
     {
       "category": "pagota",
-      "name": {"el": "Φράουλα"},
-      "price": 2.5,
-      "image": "foto/K7.jpg",
-      "description": {"el": "Παγωτό με γεύση φράουλα"}
-    },
-    {
-      "category": "pagota",
       "name": {"el": "Λεμόνι"},
       "price": 2.5,
-      "image": "foto/K8.jpg",
+      "image": "foto/K7.jpg",
       "description": {"el": "Παγωτό με γεύση λεμόνι"}
     },
     {
       "category": "pagota",
-      "name": {"el": "Φυστίκι"},
+      "name": {"el": "Φράουλα"},
+      "price": 2.5,
+      "image": "foto/K8.jpg",
+      "description": {"el": "Παγωτό με γεύση φράουλα"}
+    },
+    {
+      "category": "pagota",
+      "name": {"el": "Τιραμισού"},
       "price": 2.5,
       "image": "foto/K9.jpg",
-      "description": {"el": "Παγωτό με γεύση φιστίκι με κομμάτια φιστίκι"}
+      "description": {"el": "Παγωτό με γεύση τιραμισού, με σιρόπι κακάο και κομμάτια μπισκότου με γεύση καφέ"}
     },
     {
       "category": "pagota",
